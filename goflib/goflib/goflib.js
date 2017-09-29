@@ -12,12 +12,12 @@ class Novel extends Object{
 	}
 };
 class Tree extends Array{
-	// Tree = {[hat, pair, pair, ...], [hat, pair, pair, ...],...}
+	// Tree = [[hat, pair, pair, ...], [hat, pair, pair, ...],...]
 	// pair = [startDiverg(hat), endDiverg]
 	// hat = startDiverg
 	// 為了輔助畫世界線樹圖，Tree每一個集合的hat表示，集合中接下來所有pair皆由hat出發。
 	// 在討論畫世界線樹圖的方法時，Chap並無影響力，只有表示分歧點的Diverg才能影響畫圖
-	// 方式。故將所有Chap全數刪除，簡化worldLine，只留下來Diverg。 pair表示一組由Diverg
+	// 方式。故將所有Chap全數刪除，簡化worldLine，只留下Diverg。 pair表示一組由Diverg
 	// 組成之線段。
 	constructor(...worldLineBundle){
 		const pairBox = Tree.simplifyWLs(worldLineBundle);
@@ -58,7 +58,7 @@ class Tree extends Array{
 		}
 	}
 	static makePairs(wl, pairBox){
-		// wl中，前後兩個Diverg為一個pair，並將所有pair貯存進pairBox
+		// wl中，前後兩個Diverg拆成一個pair，並將所有pair貯存進pairBox
 		for(var i=0; i < wl.length-1 ; i++){
 			let pair = [];
 			pair.push(wl[i], wl[i+1]);
@@ -66,7 +66,7 @@ class Tree extends Array{
 		}
 	}
 	static sortDiverg(pairBox){
-		// Tree結構為{[hat, pair, pair, ...], ...}，其中hat宣告此陣列中所有pair
+		// Tree結構為[[hat, pair, pair, ...], ...]，其中hat宣告此陣列中所有pair
 		// 皆由hat出發。
 		// 在pairBox中檢查所有pair，若pair出發點(hat)，已在Tree中被建立，創立一個以
 		// 所有由新hat出發的pair集合([hat, pair, pair, ...])；若非，尋找此hat在Tree
@@ -207,8 +207,8 @@ class Chap extends String{
 
 class Diverg extends Set{
 	/* 分歧(Divergence)。於WorldLine中表示分歧點，方便判別WorldLines相對關係和Tree結構。
-	Intersec中貯存分歧的Chaps，以及分歧前('Node')/收束後('Elastic')"唯一"接續
-	的Chap(normalRoot/fateRoot)。
+	Diverg中貯存分歧的Chaps，以及分歧前('Node')/收束後('Elastic')"唯一"接續
+	的onlyChap(normalRoot/fateRoot)。
 	*/
 	constructor(attr='Node',
 				onlyChap,
@@ -279,6 +279,7 @@ const e = new Chap("e");
 const f = new Chap("f");
 const g = new Chap('g');
 const h = new Chap('h');
+
 const S = new Diverg('StartPoint', a);
 const A = new Diverg('Node', a, [b,c]);
 const B = new Diverg('Node', b, [d,e,f]);
@@ -286,6 +287,7 @@ const P = new Diverg('Elastic', g, [c,d]);
 const K = new Diverg('Elastic', h, [e,f]);
 const E1 = new Diverg('EndingPoint', g);
 const E2 = new Diverg('EndingPoint', h);
+
 const wl1 = new WorldLine(S,a,A,c,P,g,E1);
 const wl2 = new WorldLine(S,a,A,b,B,d,P,g,E1);
 const wl3 = new WorldLine(S,a,A,b,B,e,K,h,E2);
