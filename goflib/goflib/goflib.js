@@ -95,54 +95,72 @@ class WorldLine extends Array{
 		this.progress = this[this.posiProgress];
 		return this.progress;
 	};
-	grow(newRoute){
-		const finalRoute = this[this.length - 1];
-		switch(finalRoute.__proto__){
-			case Route.prototype:
-				this.push(newRoute);
-				break;
-			case Node.prototype:
-				this.push(newRoute);
-				break;
-			default:
-				throw 'WorldLine can\'t grow!!';
+	grow(...newItems){
+		for(const newItem of newItems){
+			this.push(newItem);
 		}
 	}
 	graft(newRoute, posi){
 		if (newRoute.__proto__ != Route.prototype) {
 			throw 'This is not a Route Object...';
-			return undefined;
 		}else{
-			const nowObj = this[posi];
-			switch(nowObj.__proto__){
-				case Node.prototype:
-					if (nowObj.attr == 'Elastic') {
-						throw 'Elastic can\'t not be grafted !!';
-					} else {
-						const commonRoot = this.slice(0, posi + 1);
-						const newWorldLine = new WorldLine(...commonRoot);
-						newWorldLine.grow(newRoute);
-						return newWorldLine;
-					}
-					break;
-				case Route.prototype:
-					const commonRoot = this.slice(0, posi + 1);
-					const newWorldLine = new WorldLine(...commonRoot);
-
-					const nowRoute = this[posi];
-					const nextRoute = this[posi+1];
-					const newDiverg = new Node( nowRoute, 
-												'Split',
-												[newRoute, nextRoute]);
-					newWorldLine.grow(newDiverg);
-					newWorldLine.grow(newRoute);
-					this.splice(posi + 1, 0, newDiverg)
-					return newWorldLine;
-					break;
-				default:
-					throw 'This position can not be grafted !';
-			}
+			const newWorldLine = WorldLine.graftSwitchNowObj(this, newRoute, posi);
+			return newWorldLine;
 		}
+	}
+	static graftSwitchNowObj(thisWL, newRoute, posi){
+		const nowObj = thisWL[posi];
+		switch(nowObj.__proto__){
+			case Node.prototype:
+				if (nowObj.attr == 'Elastic') {
+					throw 'Elastic can\'t not be grafted !!';
+				} else {
+					const fixedNode = WorldLine.fixNode(thisWL, posi, {
+						info_root: thisWL[posi-1],
+						info_attr: 'Split',
+						info_routes: [newRoute, thisWL[posi+1]]
+					});
+					const newWorldLine = WorldLine.divergWorldLine(thisWL, posi, newRoute);
+					return newWorldLine;
+				}
+				break;
+			case Route.prototype:
+				const newNode = WorldLine.addNode(thisWL, posi, {
+					info_root: nowObj,
+					info_attr: 'Split',
+					info_routes: [newRoute, thisWL[posi+1]]
+				});
+				const newWorldLine = WorldLine.divergWorldLine(thisWL, posi+1, newRoute);
+				return newWorldLine;
+				break;
+			default:
+				throw 'This position can not be grafted !';
+		}
+	}
+	static divergWorldLine(thisWL, divergPosi, ...newItems){
+		let newWorldLine = thisWL.slice(0, divergPosi + 1);
+		newWorldLine.grow(...newItems);
+		return newWorldLine;
+	}
+	static addNode(thisWL, addPosi, NodeInfo){
+		const {info_root, info_attr, info_routes} = NodeInfo;
+		const newNode = new Node(
+			info_root,
+			info_attr,
+			info_routes
+		);
+		thisWL.splice(addPosi + 1, 0, newNode);
+		return newNode;
+	}
+	static fixNode(thisWL, nodePosi, NodeInfo){
+		const {info_root, info_attr, info_routes} = NodeInfo;
+		const fixedNode = new Node(
+			info_root,
+			info_attr,
+			info_routes
+		);
+		thisWL[nodePosi] = fixedNode;
+		return fixedNode;
 	}
 };
 class Route extends Array{
@@ -178,87 +196,3 @@ class NodeAttrException{
 		this.message = `${attr} is a invalid attribution of Node Object`;
 	}
 }
-
-
-// Example 1
-var chapA = new Chap("有一天，老蘿遇到一個蘿莉。");
-var chapB = new Chap("老羅正準備衝上去舔那個蘿莉的時候，");
-var chapC = new Chap("他被警察發現了！");
-var chapD = new Chap('可憐的老羅，就這樣被帶回警局，在監獄中渡過他悲慘的一生。');
-var chapE = new Chap('他被老漢發現了！');
-var chapF = new Chap('他們兩個人最後一起舔那個蘿莉。Happy Ending ~')
-
-var routeZ = new Route(chapA, chapB);
-var routeY = new Route(chapC, chapD);
-var routeX = new Route(chapE, chapF);
-
-var divergK = new Node(chapB, 'Split');
-
-
-
-/*
-  A - B - K - C - D
-		  |
-		  E - F
-
-	Z - K - Y
-		|
-		X
-*/
-
-var wlA = new WorldLine(routeZ, divergK, routeY);
-var wlB = wlA.graft(routeX, 2);
-
-
-// Example 2
-/*
-		c ----- P - g - E1
-		|       |
-		|       d
- 		|		|
-S - a - A - b - B - e - K - E2
-				| 		|
-				f-------|
-						   c ----- P - g - E1
-						   |
-						   |
-						   |
-worldLine 1 (wl1): S - a - A
-								   P - g - E1
-								   |
-								   d
-								   |
-worldLine 2 (wl2): S - a - A - b - B
-
-|
-
-worldLine 3 (wl3): S - a - A - b - B - e - K - h - E2
-
-worldLine 4 (wl4): S - a - A - b - B       K - E2
-								   | 	   |
-								   f-------|
-*/
-const a = new Route(new Chap("a"));
-const b = new Route(new Chap("b"));
-const c = new Route(new Chap("c"));
-const d = new Route(new Chap("d"));
-const e = new Route(new Chap("e"));
-const f = new Route(new Chap("f"));
-const g = new Route(new Chap('g'));
-const h = new Route(new Chap('h'));
-
-const S = new Node(a, 'Origin');
-const A = new Node(a, 'Split', [b,c]);
-const B = new Node(b, 'Split', [d,e,f]);
-const P = new Node(g, 'Elastic', [c,d]);
-const K = new Node(h, 'Elastic', [e,f]);
-const E1 = new Node(g, 'Terminator');
-const E2 = new Node(h, 'Terminator');
-
-const wl1 = new WorldLine(S,a,A,c,P,g,E1);
-const wl2 = new WorldLine(S,a,A,b,B,d,P,g,E1);
-const wl3 = new WorldLine(S,a,A,b,B,e,K,h,E2);
-const wl4 = new WorldLine(S,a,A,b,B,f,K,h,E2);
-const tree = new Tree(wl1,wl2,wl3,wl4);
-
-console.log(tree);

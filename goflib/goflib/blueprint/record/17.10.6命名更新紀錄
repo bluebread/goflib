@@ -1,0 +1,98 @@
+17.10.6 命名更新紀錄
+1. 更新:
+Novel
+	tree
+	author
+	intro
+Tree
+	twig
+	twigBox
+		label
+	seedling
+		branch
+	simplifyWLs()
+	cutRoute()
+	makeTwigs()
+	sortNode()
+	createNewLabel()
+	addNewTwig()
+
+WorldLine
+	progress
+	posiProgress
+	next()
+	last()
+	grow()
+	graft()
+	(新增) => graftSwitchNowObj()
+			  divergWorldLine()
+			  addNode()
+			  fixNode()
+Chap
+	content
+Node
+	attr
+		Split
+		Elastic
+		Origin
+		Terminator
+	root
+	routes
+DivergAttrException
+	attr
+	message
+Route
+  	chaps
+  	pre()
+  	next()
+  	grow()
+  	graft()
+2. 新命名列表:
+1. 更新:
+Novel
+	tree
+	author
+	intro
+Tree
+	twig
+	twigBox
+		label
+	seedling
+		branch
+	simplifyWLs()
+	cutRoute()
+	makeTwigs()
+	sortNode()
+	createNewLabel()
+	addNewTwig()
+
+WorldLine
+	progress
+	posiProgress
+	next()
+	last()
+	grow()
+	graft()
+	graftSwitchNowObj()
+	divergWorldLine()
+	addNode()
+	fixNode()
+Chap
+	content
+Node
+	attr
+		Split
+		Elastic
+		Origin
+		Terminator
+	root
+	routes
+DivergAttrException
+	attr
+	message
+Route
+  	chaps
+  	pre()
+  	next()
+  	grow()
+  	graft()

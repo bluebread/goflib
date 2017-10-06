@@ -75,26 +75,42 @@ class WorldLine extends Array{
 	last(){/*
 		WorldLine檢查點和位置向後移一格
 	*/};
-	grow(newRoute){/*
-		檢查WorldLine最後一項為:
-			Route: 將newRoute加入最後一項
-			Node: 將newRoute加入最後一項
-			Other: 傳回錯誤訊息
+	grow(...newItems){/*
+		loop newItems{
+			將newItem加到此worldLine最後。
+		}
 	*/}
 	graft(newRoute, posi){/*
 		檢查newRoute是否為Route:
-			是: 檢查posi上的點(nowObj)為:
-					Node: 檢查nowObj是否為Elastic:
-							  是: 傳回錯誤訊息
-							  否: 複製nowObj前舊worldLine部分，成為新worldLine。
-							      將newRoute加到新worldLine最後。
-							      傳回新worldLine。
-					Route: 複製nowObj前舊worldLine部分，成為新worldLine。
-						   將新Node插在nowObj後面。
-						   將newRoute和新Node加到新worldLine最後。
-					Other: 傳回錯誤訊息
+			是: 依據posi上的點(nowObj)類型作不同處理。(graftSwitchNowObj)
 			否: 傳回錯誤訊息
-
+	*/}
+	static graftSwitchNowObj(thisWL, newRoute, posi){/*
+		檢查nowObj(thisWL[posi])為:
+			Node: 檢查nowObj是否為Elastic:
+					  是: 傳回錯誤訊息
+					  否: 修正nowObj上Node資訊。(fixNode)
+					  	  從nowObj分裂worldLine。(divergWorldLine)
+					  	  傳回新worldLine。
+			Route: 在nowObj後插入新Node。(addNode)
+				   從新Node分裂worldLine。(divergWorldLine)
+				   傳回新worldLine。
+			Other: 傳回錯誤訊息
+	*/}
+	static divergWorldLine(thisWL, divergPosi, ...newItems){/*
+		複製此worldLine於divergPosi前的部分至newWorldLine
+		將newItems加至newWorldLine最後。(grow)
+		傳回newWorldLine
+	*/}
+	static addNode(thisWL, addPosi, NodeInfo){/*
+		以NodeInfo創造newNode
+		將newNode加在此WorldLine於addPosi後的位置上。
+		傳回newNode
+	*/}
+	static fixNode(thisWL, nodePosi, NodeInfo){/*
+		以NodeInfo創造fixedNode
+		將fixedNode取代nodePosi位置上的Node。
+		傳回fixedNode
 	*/}
 };
 class Route extends Array{/*
