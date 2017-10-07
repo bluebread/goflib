@@ -19,8 +19,6 @@ class Tree extends Array{/*
 			twigs
 			labels
 		inquiry(){};
-		graft(){};
-		cut();
 */
 	constructor(...worldLineBundle){/*
 		將數條worldLine拆成twig，傳回twig集合twigBox。(simplifyWLs)
@@ -129,12 +127,10 @@ class WorldLine extends Array{/*
 class Route extends Array{/*
 	Route = [Chap, Chap, ...]
 	Unfinished:
+		Attr:
+			WorldLine
 	  	next(){};
 	  	pre(){};
-	  	grow(){};
-	  	graft(){};
-	  	wither(){};
-	  	cut(){};
 */
 	constructor(chaps){};
 };
@@ -143,12 +139,8 @@ class Chap extends String{/*
 	Unfinished: 
 		Attr:
 			Route
-			WorldLines
-			Nodes
 		next(){};
 		pre(){};
-		graft(){};
-		cut(){};
 */
 	constructor(content){};
 };
@@ -161,12 +153,9 @@ class Node extends Set{/*
 	definedAttrList: [Array] 定義目前被認可Node的性質
 	Unfinished:
 		Attr:
-			rootEntry
-			routesEntry
+			WorldLine
 		next(){};
 		pre(){};
-		graft(){};
-		cut(){};
 */
 	constructor(root,
 				attr='Split',
