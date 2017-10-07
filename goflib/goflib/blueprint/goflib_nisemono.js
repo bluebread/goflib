@@ -3,16 +3,25 @@ class Novel{/*
 		tree: [TreeObj] 世界樹圖結構
 		author: [Object] 作者資訊
 		intro: [Object] 作品簡介
-	*/
+*/
 	constructor(tree, author, intrto){}
 };
 class Tree extends Array{/*
 	Tree = [[label, twig, twig, ...], [label, twig, ...], ...]
+	Aux:
 		(Main Purpose):
 			將多條鍊(worldLine)拆成數段邊，以利於作圖
 		label: [NodeObj] 表示後面所有twig皆由此label出發
 		twig: [Array] 貯存一段有向邊的兩端點
-	*/
+	Attr: (Undefined)
+	Unfinished:
+		Attr:
+			twigs
+			labels
+		inquiry(){};
+		graft(){};
+		cut();
+*/
 	constructor(...worldLineBundle){/*
 		將數條worldLine拆成twig，傳回twig集合twigBox。(simplifyWLs)
 		按照label歸類twigBox中twig，傳回seedling。(sortNode)
@@ -62,17 +71,20 @@ class Tree extends Array{/*
 	*/}
 
 };
-class WorldLine extends Array{
-	constructor(...worldLineArray){/*
-		Attr:
-			posiProgress: [Number] 表示現在WorldLine的檢查點位置。初始為0。
-			progress: [Node or Route] 表示現在WorldLine的檢查點。初始為首項。
-		WorldLine = [Node(Route), Node(Route), ...]
-	*/}
+class WorldLine extends Array{/*
+	WorldLine = [Node(Route), Node(Route), ...]
+	Attr:
+		posiProgress: [Number] 表示現在WorldLine的檢查點位置。初始為0。
+		progress: [Node or Route] 表示現在WorldLine的檢查點。初始為首項。
+	Unfinished:
+	  	wither(){};
+	  	cut(){};
+*/
+	constructor(...worldLineArray){}
 	next(){/*
 		WorldLine檢查點和位置向前移一格
 	*/};
-	last(){/*
+	last(){/* => pre()(?)
 		WorldLine檢查點和位置向後移一格
 	*/};
 	grow(...newItems){/*
@@ -85,6 +97,7 @@ class WorldLine extends Array{
 			是: 依據posi上的點(nowObj)類型作不同處理。(graftSwitchNowObj)
 			否: 傳回錯誤訊息
 	*/}
+
 	static graftSwitchNowObj(thisWL, newRoute, posi){/*
 		檢查nowObj(thisWL[posi])為:
 			Node: 檢查nowObj是否為Elastic:
@@ -116,26 +129,44 @@ class WorldLine extends Array{
 class Route extends Array{/*
 	Route = [Chap, Chap, ...]
 	Unfinished:
-	  	pre(){};
 	  	next(){};
+	  	pre(){};
 	  	grow(){};
 	  	graft(){};
+	  	wither(){};
+	  	cut(){};
 */
 	constructor(chaps){};
 };
 class Chap extends String{/*
 	Chap = content: [String] 作品內容
 	Unfinished: 
+		Attr:
+			Route
+			WorldLines
+			Nodes
+		next(){};
+		pre(){};
 		graft(){};
+		cut(){};
 */
 	constructor(content){};
 };
 class Node extends Set{/*
+	Node = (Route, Route, ...)
 	Attr:
 		attr: [String] 表示Node的性質
 		root: [RouteObj] 分歧前 or 收束後唯一與Node連接的Route
 		routes : [Array] 分歧後 or 收束前與Node連接的Route。
 	definedAttrList: [Array] 定義目前被認可Node的性質
+	Unfinished:
+		Attr:
+			rootEntry
+			routesEntry
+		next(){};
+		pre(){};
+		graft(){};
+		cut(){};
 */
 	constructor(root,
 				attr='Split',
