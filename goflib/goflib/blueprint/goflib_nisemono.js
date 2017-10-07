@@ -179,7 +179,23 @@ class Node extends Set{/*
 class NodeAttrException{/*
 	Attr: 
 		attr: [String] Node性質
-		message: [String] 傳入錯誤attr時傳回的錯誤訊息
+		message: [String] 輸入Node性質錯誤訊息
 */
 	constructor(attr){};
 };
+class TreeException{/*
+	definedType = ['InputLabelExist']
+	Unfinished:
+		Attr:
+			type: [String] 錯誤類型
+			InputLabelExistMessage: [String] 輸入標籤存在錯誤訊息
+*/};
+class WorldLineGraftException{/*
+	Unfinished:
+		definedType = ['InputProto', 'GraftedPosiAttr, "GraftedPosiProto"]
+		Attr:
+			type: [String] 錯誤類型
+			InputProtoMessage: [String] 輸入錯誤訊息
+			GraftedPosiAttrMessage: [String] 嫁接點性質錯誤訊息
+			GraftedPosiProtoMessage: [String] 嫁接點原型錯誤訊息
+*/};		
